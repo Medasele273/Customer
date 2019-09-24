@@ -10,10 +10,19 @@ import java.util.Optional;
 
 public class CustomerServiceImpl implements CustomerService {
 
-    private CustomerDao customerDao = new CustomerDaoImpl();
+    private CustomerDao customerDao ;
+
+    public CustomerServiceImpl(){
+
+    }
 
     public CustomerServiceImpl(CustomerDao customerDao){
         this.customerDao=customerDao;
+    }
+
+    public void setCustomerDao(CustomerDao customerDao){
+        this.customerDao=customerDao;
+
     }
 
     @Override
