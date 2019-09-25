@@ -4,9 +4,39 @@
         xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url"  value="jdbc:mysql://localhost:3306/customer"/>
+        <property name="username"  value="root"/>
+        <property name="password" value="asweco123"/>
+    </bean>
+
+<!-- Hibernate 3 Annotation SessionFactory bean definition -->
+
+    <bean id="hibernate3AnnotatedSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="annotatedClasses">
+            <list>
+                <value>com.meda.domain.Customer</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.current_session_context_class">thread</prop>
+                <prop key="hibernate.show_sql">false</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="customerHibernateDao" class="com.meda.daoImpl.CustomerHibernateDaoImpl">
+        <constructor-arg name ="sessionFactory"  ref="hibernate3AnnotatedSessionFactory"/>
+    </bean>
+
     <bean id="customerDao" class="com.meda.daoImpl.CustomerDaoImpl"></bean>
 
-    <bean id="customerService" class="com.meda.serviceImpl.CustomerServiceImpl" autowire="byName">
+    <bean id="customerService" class="com.meda.serviceImpl.CustomerServiceImpl">
+        <constructor-arg name="customerHibernateDao"  ref="customerHibernateDao"/>
        <!-- <property name="customerDao" ref="customerDao"/>-->
     </bean>
 
